@@ -8,14 +8,14 @@ namespace TodoApi.Controllers;
 public class SimpleController : BaseController
 {
     [HttpGet("onlyAdmin")]
-    [Authorize(Roles = "ADMIN", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "ADMIN")]
     public ActionResult<string> Get()
     {
         return Ok($"Only admin can see this");
     }
 
     [HttpGet("onlyUser")]
-    [Authorize(Roles = "USER", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "USER")]
     public IActionResult Test()
     {
         var id = User.FindFirstValue("id");
