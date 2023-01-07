@@ -11,5 +11,6 @@ public class TodoDbContext : IdentityDbContext<User>
     {
     }
     public DbSet<Job> Jobs { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     
 }

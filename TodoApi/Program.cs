@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stripe;
 using TodoApi;
 using TodoApi.Data;
 using TodoApi.Errors;
@@ -16,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
+    
 // Swagger
 builder.Services.AddSwaggerGen(options =>
 {
@@ -51,8 +52,12 @@ builder.Services.AddDbContext<TodoDbContext>(options =>
 });
 
 // DI
-builder.Services.AddScoped<IAuthValidator, AuthValidator>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services
+    .AddScoped<IStripeService, StripeService>()
+    .AddScoped<CustomerService>()
+    .AddScoped<ChargeService>()
+    .AddScoped<TokenService>();
 
 // Auth
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -89,6 +94,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
         return new BadRequestObjectResult(errorResponses);
     };
 });
+
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
 
 var app = builder.Build();
 
